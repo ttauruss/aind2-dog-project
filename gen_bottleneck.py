@@ -36,4 +36,4 @@ for dt in data_types:
     res = model.predict(img_input)
     predictions.append(res)
 
-np.savez('test', train=predictions[0], test=predictions[1], valid=predictions[2])
+np.savez('test.npz', train=predictions[0], test=predictions[1], valid=predictions[2])
