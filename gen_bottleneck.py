@@ -6,6 +6,14 @@ import numpy as np
 import glob
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+from tqdm import tqdm
+from sklearn.datasets import load_files
+
+def load_dataset(path):
+    data = load_files(path)
+    dog_files = np.array(data['filenames'])
+    # dog_targets = np_utils.to_categorical(np.array(data['target']), 133)
+    return dog_files
 
 def path_to_tensor(img_path):
     # loads RGB image as PIL.Image.Image type
@@ -16,7 +24,7 @@ def path_to_tensor(img_path):
     return np.expand_dims(x, axis=0)
 
 def paths_to_tensor(img_paths):
-    list_of_tensors = [path_to_tensor(img_path) for img_path in img_paths]
+    list_of_tensors = [path_to_tensor(img_path) for img_path in tqdm(img_paths)]
     return np.vstack(list_of_tensors)
 
 data_types = ['train', 'test', 'valid']
@@ -25,7 +33,9 @@ predictions = []
 model = ResNet50(include_top=False)
 
 for dt in data_types:
-    img_paths = glob.glob("dogImages/" + dt + "/*/*")
+    print('Data type ' + dt)
+    # img_paths = glob.glob("dogImages/" + dt + "/*/*")
+    img_paths = load_dataset("dogImages/" + dt)
     # img_paths = glob.glob("dogImages_copy/" + dt + "/*/*")
     # img_paths = glob.glob("dogImages_copy/" + dt + "/001.Affenpinscher/*")
 
@@ -34,6 +44,7 @@ for dt in data_types:
     print(img_input.shape)
 
     res = model.predict(img_input)
-    predictions.append(res)
+    # predictions.append(res)
+    np.save(dt + '.npy', res)
 
-np.savez('test.npz', train=predictions[0], test=predictions[1], valid=predictions[2])
+# np.savez('test.npz', train=predictions[0], test=predictions[1], valid=predictions[2])
