@@ -35,11 +35,11 @@ valid_generator = train_datagen.flow_from_directory(
 
 model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
-checkpointer = ModelCheckpoint(filepath='saved_models/weights.best.Resnet50.hdf5', verbose=1, save_best_only=True)
+checkpointer = ModelCheckpoint(filepath='saved_models/weights.best.Resnet50Aug.hdf5', verbose=1, save_best_only=True)
 
 model.fit_generator(train_generator,
           validation_data=valid_generator,
 	      steps_per_epoch=6680//32,
 		  validation_steps=835//32,
-          epochs=20, callbacks=[checkpointer], verbose=1)
+          epochs=100, callbacks=[checkpointer], verbose=1)
 
